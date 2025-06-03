@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './ProductPage.css'; // Assuming your CSS is here
-import { productImages } from '../../utils/productImages'; // ADD THIS IMPORT
+import './ProductPage.css'; 
+import { productImages } from '../../utils/productImages'; 
 const ProductPage = () => {
   const [allFetchedProducts, setAllFetchedProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);

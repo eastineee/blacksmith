@@ -1,9 +1,9 @@
 import React, { useState, useCallback, createContext, useContext, useEffect } from 'react';
 import './Dashboard.css';
-import { useAuth } from '../../data/AuthProvider'; // MAKE SURE THIS PATH IS CORRECT
-import { productImages } from '../../utils/productImages'; // Your imported image utility
-import cloud1 from '../../assets/cloud1.png'; // This path seems fine based on your CSS
-import { useNavigate } from 'react-router-dom'; // <<<<<<<<< IMPORT THIS
+import { useAuth } from '../../data/AuthProvider'; 
+import { productImages } from '../../utils/productImages'; 
+import cloud1 from '../../assets/cloud1.png'; 
+import { useNavigate } from 'react-router-dom'; 
 
 const DashboardContext = createContext();
 
@@ -29,7 +29,7 @@ const fetchApi = async (url, options = {}, customerId) => {
 
 const DashboardProvider = ({ children }) => {
   const { user, isAuthenticated, handleLogout: authHandleLogout } = useAuth(); // Get user from AuthProvider
-  const navigate = useNavigate(); // <<<<<<<<<<<<<< INITIALIZE useNavigate
+  const navigate = useNavigate();
 
   const [activeSection, setActiveSection] = useState('dashboard');
   const [profile, setProfile] = useState({ firstName: '', lastName: '', email: '', phone: '', avatarUrl: '' });
@@ -76,10 +76,7 @@ const DashboardProvider = ({ children }) => {
               const imageName = item.ImagePath;
               let resolvedImageSrc = productImages[imageName] || '/placeholder.png';
               if (imageName && !productImages.hasOwnProperty(imageName)) {
-                // console.warn(`[Dashboard Image] WARNING: Image '${imageName}' for item '${item.ProductName}' NOT found in productImages. Using placeholder.`);
-              } else if (!imageName) {
-                //  console.warn(`[Dashboard Image] WARNING: No ImagePath provided from backend for item '${item.ProductName}'. Using placeholder.`);
-              }
+              } else if (!imageName) 
               return { ...item, image: resolvedImageSrc };
             })
           }));
@@ -180,8 +177,6 @@ const DashboardProvider = ({ children }) => {
 
   const handleShopNow = () => { alert('Redirecting to shop page (not implemented)'); };
   const handleViewDetails = () => { alert('Showing product details (not implemented)'); };
-
-  // <<<<<<<<<<<<<< MODIFIED handleTrackOrder >>>>>>>>>>>>>
   const handleTrackOrder = (orderId) => {
     if (!orderId) {
         console.error("Track Order: orderId is undefined.");
@@ -191,7 +186,6 @@ const DashboardProvider = ({ children }) => {
     // Navigate to '/ordertrack' and pass the orderId in the state object
     navigate('/ordertrack', { state: { orderId: orderId } });
   };
-  // <<<<<<<<<<<<<< END OF MODIFICATION >>>>>>>>>>>>>
 
   const handleBuyAgain = (orderId) => { alert(`Adding items from order ${orderId} to cart (not implemented)`); };
   const handleCancelOrder = (orderId) => { alert(`Canceling order ${orderId} (not implemented)`); };

@@ -1,4 +1,3 @@
-// src/data/AuthProvider.js (or your chosen path e.g., src/context/AuthProvider.js)
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
@@ -19,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         const parsedUserData = JSON.parse(userDataString);
         console.log("AuthProvider: Parsed userData from localStorage:", parsedUserData);
         
-        // CRITICAL CHECK: Ensure CustomerID is present and is a number
+       
         if (parsedUserData && typeof parsedUserData.CustomerID === 'number' && !isNaN(parsedUserData.CustomerID)) {
           setUser(parsedUserData);
           setIsAuthenticated(true);
@@ -28,7 +27,6 @@ export const AuthProvider = ({ children }) => {
           console.warn("AuthProvider: Restored userData MISSING or has INVALID CustomerID. Clearing stored session.", parsedUserData);
           localStorage.removeItem('authToken');
           localStorage.removeItem('metalworksUser');
-          // No need to set user/isAuthenticated to null/false, they are already default
         }
       } catch (error) {
         console.error("AuthProvider: Failed to parse user data from localStorage. Clearing stored session.", error);
@@ -44,8 +42,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userDataFromBackend, token) => {
     console.log("AuthProvider: login function called with userDataFromBackend:", userDataFromBackend, "and token:", !!token);
-    // CRITICAL CHECK: Ensure userDataFromBackend has CustomerID and it's a number
-    if (userDataFromBackend && typeof userDataFromBackend.CustomerID === 'number' && !isNaN(userDataFromBackend.CustomerID) && token) {
+    if (userDataFromBackend &&  typeof userDataFromBackend.CustomerID === 'number' && !isNaN(userDataFromBackend.CustomerID) && token) {
       localStorage.setItem('authToken', token);
       localStorage.setItem('metalworksUser', JSON.stringify(userDataFromBackend)); 
       setUser(userDataFromBackend);
@@ -53,7 +50,6 @@ export const AuthProvider = ({ children }) => {
       console.log("AuthProvider: User LOGGED IN and session stored:", userDataFromBackend);
     } else {
       console.error("AuthProvider: Login FAILED - Invalid userData (missing/invalid CustomerID) or token from backend.", {userDataFromBackend, token});
-      // Optionally, clear any partial storage if login data is bad
       localStorage.removeItem('authToken');
       localStorage.removeItem('metalworksUser');
       setUser(null);
@@ -67,7 +63,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('metalworksUser');
     setUser(null);
     setIsAuthenticated(false);
-    // Navigation is typically handled by the component calling logout or by App.js
   };
 
   const contextValue = {

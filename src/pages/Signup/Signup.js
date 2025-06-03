@@ -6,7 +6,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    email: '',     // This will likely map to 'userEmail' in your backend 'customer' table
+    email: '',    
     password: ''
   });
 
@@ -15,7 +15,7 @@ const Signup = () => {
     lastName: '',
     email: '',
     password: '',
-    apiError: '' // For general errors from the API
+    apiError: '' 
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,7 @@ const Signup = () => {
       [name]: value
     }));
     
-    // Clear specific field error when typing
+    
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -75,10 +75,6 @@ const Signup = () => {
     return isValid;
   };
 
-  // This separate submit function for navigation is no longer needed on the button's onClick
-  // const submit = () => {
-  //   navigate('/login');
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,10 +82,9 @@ const Signup = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setErrors(prev => ({ ...prev, apiError: '' })); // Clear previous API errors
+    setErrors(prev => ({ ...prev, apiError: '' }));
 
     try {
-      // Construct the API URL. Adjust '/api/auth/signup' if your endpoint is different.
       const apiUrl = `/api/auth/signup`;
 
       const response = await fetch(apiUrl, {
@@ -100,16 +95,14 @@ const Signup = () => {
         body: JSON.stringify({
             firstName: formData.firstName,
             lastName: formData.lastName,
-            userEmail: formData.email, // Assuming backend expects 'userEmail'
+            userEmail: formData.email,
             password: formData.password
         }),
       });
 
-      const responseData = await response.json(); // Try to parse JSON regardless of response.ok
+      const responseData = await response.json(); 
 
       if (!response.ok) {
-        // If the server returns an error (e.g., email already exists, validation error from backend)
-        // It's good if your backend returns a 'message' field in the JSON error response
         const errorMessage = responseData.message || `HTTP error! status: ${response.status}`;
         setErrors(prev => ({ ...prev, apiError: errorMessage }));
         console.error('Signup failed:', responseData);
@@ -119,12 +112,10 @@ const Signup = () => {
 
       // Handle successful signup
       console.log('Signup successful', responseData);
-      // Optionally, you can show a success message before navigating or pass state
       navigate('/login', { state: { message: 'Signup successful! Please login.' } });
       
     } catch (error) {
       console.error('Signup network error or other issue:', error);
-      // Handle network errors or other issues not coming from a server JSON response
       setErrors(prev => ({ ...prev, apiError: error.message || 'An unexpected error occurred. Please try again.' }));
     } finally {
       setIsLoading(false);
@@ -191,7 +182,6 @@ const Signup = () => {
             </div>
             
             <button
-              // onClick={submit} // REMOVED: Navigation is now handled after successful API call
               type="submit"
               className="submit-button"
               disabled={isLoading}

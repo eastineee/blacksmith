@@ -1,8 +1,7 @@
-// src/pages/ordertracking/ot.js (or your TrackOrder.js path)
-import React, { useEffect, useState } from 'react'; // Added useEffect, useState
-import './ot.css'; // Make sure this CSS file exists and is styled
-import { useNavigate, useLocation, Link } from 'react-router-dom'; // Added Link, useLocation
-import { useAuth } from '../../data/AuthProvider'; // Adjust path to your AuthProvider.js
+import React, { useEffect, useState } from 'react'; 
+import './ot.css'; 
+import { useNavigate, useLocation, Link } from 'react-router-dom'; 
+import { useAuth } from '../../data/AuthProvider'; 
 
 const TrackOrder = () => {
   const navigate = useNavigate();
@@ -14,13 +13,10 @@ const TrackOrder = () => {
     orderId: 'N/A',
     recipientName: 'Loading...',
     recipientEmail: 'Loading...'
-    // You might fetch more details based on orderId if needed
   });
 
-  // Current status of the order - this would ideally come from backend based on orderId
-  const [currentStatus, setCurrentStatus] = useState('sorting'); // Example: 'created', 'picked', 'sorting', 'delivery', 'delivered'
+  const [currentStatus, setCurrentStatus] = useState('sorting'); 
   
-  // Static delivery log for now, in a real app this would be fetched based on orderId
   const deliveryLogEntries = [
     { time: '18 Apr 2025 | 10:10 AM', location: '[Parañaque DC]', message: 'Your order has been picked up from our forge', status: 'picked'},
     { time: '18 Apr 2025 – 10:10 AM', location: '[Parañaque DC]', message: 'Package picked up by our dwarven couriers', status: 'picked'},
@@ -32,7 +28,7 @@ const TrackOrder = () => {
 
 
   useEffect(() => {
-    if (!isLoadingAuth) { // Wait for auth state to be resolved
+    if (!isLoadingAuth) {
       if (!isAuthenticated) {
         // If user is not authenticated, redirect to login, optionally passing intended destination
         navigate('/login', { state: { from: location, message: "Please login to track your order." } });
@@ -48,11 +44,6 @@ const TrackOrder = () => {
           recipientName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'N/A',
           recipientEmail: user.email || user.userEmail || 'N/A' // Handle variations in email field name
         });
-        // TODO: In a real application, you would make an API call here
-        // using 'passedOrderId' and 'user.CustomerID' to fetch the actual
-        // current status and detailed delivery log for this specific order from your backend.
-        // For now, we are using a static 'currentStatus' and 'deliveryLogEntries'.
-        // Example: fetchOrderStatus(passedOrderId).then(statusData => setCurrentStatus(statusData.currentStatus));
       } else if (!passedOrderId) {
         console.warn("TrackOrder: No orderId received in location state.");
         setOrderDetails(prev => ({ ...prev, orderId: "Not Provided", recipientName: "N/A", recipientEmail: "N/A" }));
@@ -84,8 +75,7 @@ const TrackOrder = () => {
     return <div className="track-order-container"><div className="track-order-content"><p>Loading authentication...</p></div></div>;
   }
   
-  // If not authenticated after loading, ProtectedRoute in App.js should handle it,
-  // but this is an additional check if user lands here directly.
+
   if (!isAuthenticated) {
      return (
         <div className="track-order-container">
@@ -132,7 +122,7 @@ const TrackOrder = () => {
               <h3>📜 Delivery Log</h3>
               <ul>
                 {deliveryLogEntries
-                  .filter(entry => statusLevels.indexOf(entry.status) <= currentStatusIndex) // Show only relevant past/current logs
+                  .filter(entry => statusLevels.indexOf(entry.status) <= currentStatusIndex) 
                   .map((log, index) => (
                   <li key={index}>
                     <span className="time">{log.time}</span> – 

@@ -1,41 +1,35 @@
-// src/pages/Login/Login.js (or your LoginForm.js path)
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import './Login.css'; // Make sure this CSS file exists and is styled
-import { useAuth } from '../../data/AuthProvider'; // Adjust path to your AuthProvider.js
+import './Login.css'; 
+import { useAuth } from '../../data/AuthProvider';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
-    email: '',    // Should match what your backend expects, e.g., userEmail
+    email: '',    
     password: ''
   });
   
   const [errors, setErrors] = useState({
     email: '',
     password: '',
-    server: '' // For server-side error messages
+    server: '' 
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // To get the page the user was trying to access
-  const { login } = useAuth(); // Get the login function from AuthContext
+  const location = useLocation(); 
+  const { login } = useAuth(); 
 
-  // Frontend email validation (can be simpler if backend does thorough validation)
+  // Frontend email validation 
   const validateEmail = (email) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   };
   
-  // Frontend password validation (basic check, main validation is on backend)
-  // const validatePassword = (password) => {
-  //   return password.length >= 8; // Example: just check length
-  // };
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '', server: '' })); // Clear specific field error and server error
+    setErrors(prev => ({ ...prev, [name]: '', server: '' })); 
   };
 
   const handleSubmit = async (e) => {
@@ -56,16 +50,11 @@ const LoginForm = () => {
       newErrors.password = 'Password is required';
       isValid = false;
     } 
-    // else if (!validatePassword(formData.password)) { // Basic frontend password validation can be lenient
-    //   newErrors.password = 'Password must be at least 8 characters';
-    //   isValid = false;
-    // }
-    
     setErrors(newErrors);
     
     if (isValid) {
       setIsSubmitting(true);
-      setErrors(prev => ({ ...prev, server: '' })); // Clear previous server errors
+      setErrors(prev => ({ ...prev, server: '' })); 
 
       try {
         const apiUrl = `/api/auth/login`; // Your backend login endpoint
@@ -74,26 +63,19 @@ const LoginForm = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          // Ensure the body matches what your backend /api/auth/login expects
-          // Your customer table uses 'userEmail' and 'password_hash'.
-          // Your backend login route will compare plaintext password with stored hash.
           body: JSON.stringify({ 
             userEmail: formData.email, // Send as userEmail if backend expects that
             password: formData.password 
           }),
         });
         
-        const responseData = await response.json(); // Always try to parse JSON
-        
+        const responseData = await response.json(); 
         if (!response.ok) {
-          // Use message from backend if available, otherwise a generic one
           setErrors(prev => ({ ...prev, server: responseData.message || `Login failed. Status: ${response.status}` }));
         } else {
           // Login successful
           console.log('Login successful:', responseData);
-          
-          // Call the login function from AuthContext
-          // Ensure responseData.user and responseData.token match what your backend sends
+      
           if (responseData.user && responseData.token) {
             login(responseData.user, responseData.token); // This updates the global auth state
 
@@ -113,11 +95,9 @@ const LoginForm = () => {
     }
   };
 
-  // The goToDashboard function on the button might be redundant if handleSubmit handles navigation.
-  // If it's for a different action, clarify. Otherwise, the form's onSubmit is primary.
-
+ 
   return (
-    <div className="login-page-content"> {/* Ensure class names match your CSS */}
+    <div className="login-page-content"> 
       <div className="welcome-message">Welcome back adventurer!</div>
       <div className="login-wrapper">
         <div className="login-form-container">

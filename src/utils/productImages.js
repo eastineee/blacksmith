@@ -1,7 +1,3 @@
-// src/utils/productImages.js
-
-// Import all your product images from src/assets
-// You already have these imports in your original productsData.js, just consolidate them here.
 import steel_sword from '../assets/steel_sword.png';
 import steel_armor from '../assets/steel_armor.png';
 import steel_dagger from '../assets/steel_dagger.png';
@@ -23,7 +19,6 @@ import titanium_helmet from '../assets/titanium_helmet.png';
 import titanium_shield from '../assets/titanium_shield.png';
 import titanium_sword from '../assets/titanium_sword.png';
 
-// Create an object mapping image filenames (from your database) to the imported image modules
 export const productImages = {
   'steel_sword.png': steel_sword,
   'steel_armor.png': steel_armor,
@@ -45,5 +40,4 @@ export const productImages = {
   'titanium_helmet.png': titanium_helmet,
   'titanium_shield.png': titanium_shield,
   'titanium_sword.png': titanium_sword,
-  // Add all your other image filenames and their corresponding imported variables here
 };

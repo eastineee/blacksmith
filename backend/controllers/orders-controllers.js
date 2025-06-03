@@ -68,7 +68,7 @@ const postOrder = async (req, res) => {
     }
 
     const paymentAddressPlaceholder = "Order Payment - Address N/A";
-    const placeholderOriginalPaymentID = newOrderId; // Or 0 if that's the intent for a placeholder
+    const placeholderOriginalPaymentID = newOrderId;
     await connection.execute(
       'INSERT INTO `paymentmethod` (`CustomerID`, `OrderID`, `PaymentID`, `Details`, `Address`) VALUES (?, ?, ?, ?, ?)',
       [customerId, newOrderId, placeholderOriginalPaymentID, paymentMethod, paymentAddressPlaceholder]

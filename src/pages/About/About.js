@@ -4,7 +4,6 @@ import fbIcon from "./Aboutassets/fb.png";
 import instaIcon from "./Aboutassets/insta.png";
 import linkedinIcon from "./Aboutassets/linkedin.png";
 
-// Social media data (static, so declared outside component)
 const SOCIAL_MEDIA = [
   {
     name: "Facebook",
@@ -32,7 +31,7 @@ const SOCIAL_MEDIA = [
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState('mission');
 
-  // Tab content to avoid duplicate JSX
+  
   const TAB_CONTENT = {
     mission: (
       <p>

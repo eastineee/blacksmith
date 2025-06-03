@@ -160,7 +160,7 @@ const postAddresses = async (req, res) => {
         connection = await dbPool.getConnection();
         await connection.beginTransaction();
 
-        if (IsDefault) { // If this new address is set to default, unset others
+        if (IsDefault) { // 
             await connection.execute(
                 'UPDATE `customer_addresses` SET `IsDefault` = FALSE WHERE `CustomerID` = ?',
                 [customerId]

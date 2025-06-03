@@ -1,15 +1,7 @@
-// src/pages/orderconfirm/oc.js (or your OrderConfirmation.js path)
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import './oc.css'; // Make sure this CSS file exists and is styled
-import receiptImage from './ocassets/RCPT.png'; // For fallback print
-
-// If item.image in the received orderData.items is just a filename string
-// (e.g., if CheckoutPage passed items from backend response directly WITHOUT mapping ImagePath to imported image variable)
-// AND you are using the "images in src/assets" strategy, you would need
-// to import all images and use an imageMap here, similar to ProductDetail.js.
-// **However, the recommended approach is that CheckoutPage.js constructs orderData.items
-// where item.image is ALREADY the imported image variable.**
+import './oc.css'; 
+import receiptImage from './ocassets/RCPT.png'; 
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();

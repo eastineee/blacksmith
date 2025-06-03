@@ -1,10 +1,9 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken'); // Uncomment if you implement JWT
+
 
 const dbPool = require("../config/db-config")
 
-// const JWT_SECRET = process.env.JWT_SECRET;
 
 const signUp = async (req, res) => {
   const { firstName, lastName, userEmail, password } = req.body;
@@ -60,7 +59,7 @@ const logIn = async (req, res) => {
       email: user.userEmail,
       phone: user.PhoneNumber || ''
     };
-    // IMPORTANT: Replace "fake-auth-token..." with actual JWT generation
+  
     const token = "fake-auth-token-replace-with-real-jwt";
     res.status(200).json({ message: 'Login successful!', user: userDataForFrontend, token: token });
   } catch (error) {

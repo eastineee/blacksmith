@@ -1,11 +1,10 @@
-// src/pages/checkout/co.js
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './co.css';
 import { useCart } from '../../data/CartProvider';
 import { useAuth } from '../../data/AuthProvider';
 
-// Helper function for API calls (can be moved to a shared utils file)
+// Helper function for API calls
 const fetchApi = async (url, options = {}, customerId) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -34,7 +33,7 @@ const AddressForm = ({ onClose, onSave, currentAddress, initialUserData }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (currentAddress && currentAddress.Line1) { // Editing an existing, complete address for THIS checkout instance
+    if (currentAddress && currentAddress.Line1) { 
       setAddressForm({
         Nickname: currentAddress.Nickname || '',
         RecipientName: currentAddress.RecipientName || '',
@@ -45,16 +44,16 @@ const AddressForm = ({ onClose, onSave, currentAddress, initialUserData }) => {
         Region: currentAddress.Region || '',
         PostalCode: currentAddress.PostalCode || '',
         Country: currentAddress.Country || '',
-        IsDefault: !!currentAddress.IsDefault // This is more for profile management, less for checkout override
+        IsDefault: !!currentAddress.IsDefault 
       });
-    } else if (initialUserData) { // Pre-fill for a new address using logged-in user's basic info
+    } else if (initialUserData) {
       setAddressForm({
-        Nickname: '', // Nickname usually user-defined
+        Nickname: '', 
         RecipientName: `${initialUserData.firstName || ''} ${initialUserData.lastName || ''}`.trim() || '',
         ContactPhone: initialUserData.phone || '',
         Line1: '', Line2: '', City: '', PostalCode: '', Country: '', IsDefault: false
       });
-    } else { // Default empty state for a completely new address by a guest or if no initial data
+    } else { 
       setAddressForm({
         Nickname: '', RecipientName: '', ContactPhone: '', Line1: '', Line2: '',
         City: '', PostalCode: '', Country: '', IsDefault: false
@@ -188,11 +187,10 @@ const CheckoutPage = () => {
       fetchApi('/api/user/addresses', {}, customerId)
         .then(data => {
           setUserAddresses(Array.isArray(data) ? data : []);
-          // If no deliveryAddress is set for the order yet, try to pre-fill with default from profile
           if (!deliveryAddress && Array.isArray(data) && data.length > 0) {
             const defaultAddr = data.find(addr => addr.IsDefault);
             if (defaultAddr) {
-              handleSelectSavedAddress(defaultAddr); // Selects it for the current order
+              handleSelectSavedAddress(defaultAddr); 
             }
           }
         })
@@ -202,7 +200,7 @@ const CheckoutPage = () => {
         })
         .finally(() => setIsLoadingAddresses(false));
     }
-  }, [isAuthenticated, customerId, deliveryAddress]); // Rerun if deliveryAddress changes, to ensure list is fresh if user adds then wants to select
+  }, [isAuthenticated, customerId, deliveryAddress]); 
 
   useEffect(() => {
     fetchUserAddresses();
@@ -236,11 +234,9 @@ const CheckoutPage = () => {
     }
   };
 
-  // Sets a selected address from user's profile as the deliveryAddress for THIS order
+  
   const handleSelectSavedAddress = (profileAddress) => {
     setDeliveryAddress({
-      // Map fields from profileAddress (which comes from customer_addresses table)
-      // to the structure expected by the order payload (deliveryAddress field)
       recipientName: profileAddress.RecipientName,
       line1: profileAddress.Line1,
       line2: profileAddress.Line2 || '',
@@ -257,7 +253,6 @@ const CheckoutPage = () => {
   // Saves address from the form to be used for THIS order,
   // AND saves it to the user's profile if they are logged in.
   const handleSaveAddressFromForm = async (addressFormData) => {
-    // `addressFormData` is from the AddressForm state, e.g., { RecipientName, Line1, ... Nickname, IsDefault (if used) }
     const addressForOrder = { // Structure for `deliveryAddress` in order payload
         recipientName: addressFormData.RecipientName,
         line1: addressFormData.Line1,
@@ -270,7 +265,6 @@ const CheckoutPage = () => {
 
     if (isAuthenticated && customerId) {
       try {
-        // Save this new address to the user's profile
         // The backend /api/user/addresses expects fields like Nickname, RecipientName, Line1, etc.
         const savedToProfile = await fetchApi('/api/user/addresses', {
           method: 'POST',
@@ -284,13 +278,11 @@ const CheckoutPage = () => {
             Region: addressFormData.Region,
             PostalCode: addressFormData.PostalCode,
             Country: addressFormData.Country,
-            IsDefault: addressFormData.IsDefault // From form, if you enable this checkbox
+            IsDefault: addressFormData.IsDefault 
           }),
         }, customerId);
 
-        // If successfully saved to profile, refresh the list of user addresses
         fetchUserAddresses();
-        // And use this (potentially augmented by backend, e.g., with AddressID) for the current order
         setDeliveryAddress({
             ...addressForOrder,
             _originalAddressID: savedToProfile.address?.AddressID // If backend returns the new ID
@@ -332,7 +324,7 @@ const CheckoutPage = () => {
     const orderPayloadToBackend = {
       items: cartItems.map(item => ({
         productId: item.id, quantity: item.quantity,
-        unitPrice: Number(item.price) || 0, isRushItem: item.rushOrder, // isRushItem seems specific to cart, backend order uses overall
+        unitPrice: Number(item.price) || 0, isRushItem: item.rushOrder, 
       })),
       paymentMethod: paymentMethod,
       finalTotal: totalPayment,
@@ -342,14 +334,14 @@ const CheckoutPage = () => {
       appliedDiscountAmount: discountAmount,
       merchandiseSubtotal: merchandiseSubtotal,
       shippingFee: shipping,
-      deliveryAddress: deliveryAddress // This is the crucial part
+      deliveryAddress: deliveryAddress 
     };
 
     try {
       const backendResponseData = await fetchApi('/api/orders', {
         method: 'POST',
         body: JSON.stringify(orderPayloadToBackend)
-      }, customerId); // Pass customerId for fetchApi helper
+      }, customerId); 
 
       const orderDataForConfirmation = {
         orderId: backendResponseData.orderDetails.orderId,

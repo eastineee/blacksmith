@@ -1,28 +1,17 @@
-// src/pages/ProductDetail/ProductDetail.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import './ProductDetails.css'; // Make sure this CSS file exists and is styled
-import { useCart } from '../../data/CartProvider'; // Adjust path if necessary
-import { productImages } from '../../utils/productImages'; // ADD THIS IMPORT
-// !!! IMPORTANT: YOU MUST IMPORT ALL YOUR PRODUCT IMAGES FROM src/assets HERE !!!
-// AND ADD THEM TO THE imageMap BELOW. THESE ARE EXAMPLES.
-// Adjust paths relative to this file's location (e.g., '../../assets/image.png' 
-// if ProductDetail.js is in 'src/pages/ProductDetail/' and images are in 'src/assets/').
-
+import './ProductDetails.css'; 
+import { useCart } from '../../data/CartProvider'; 
+import { productImages } from '../../utils/productImages'; 
 import steelSwordImg from '../../assets/steel_sword.png'; 
 import ironShieldImg from '../../assets/iron_shield.png';
 import bronzeHelmetImg from '../../assets/bronze_helmet.png';
-// ... ADD IMPORTS FOR ALL YOUR OTHER PRODUCT IMAGES ...
-// Example: import steelArmorImg from '../../assets/steel_armor.png';
 
 const imageMap = {
-  // !!! Keys should be the EXACT ImagePath filename string from your API/database !!!
   'steel_sword.png': steelSwordImg,
   'iron_shield.png': ironShieldImg,
-  'bronze_helmet.png': bronzeHelmetImg,
-  // ... ADD MAPPINGS FOR ALL YOUR IMPORTED IMAGES ...
-  // Example: 'steel_armor.png': steelArmorImg,
-  'default_placeholder.png': null // Optional: for a fallback image
+  'bronze_helmet.png': bronzeHelmetImg, 
+  'default_placeholder.png': null 
 };
 
 const ProductDetail = () => {
@@ -42,8 +31,8 @@ const ProductDetail = () => {
     const fetchProductDetails = async () => {
       setIsLoading(true);
       setError(null);
-      setProduct(null); // Reset product on ID change
-      setRelatedProducts([]); // Reset related products
+      setProduct(null); 
+      setRelatedProducts([]); 
 
       try {
         // Fetch the main product details from your backend API
@@ -62,8 +51,6 @@ const ProductDetail = () => {
         const productData = await productResponse.json();
         setProduct(productData); // Set the fetched product
 
-        // Fetch all products to find related ones (based on Material, excluding current product)
-        // For a large number of products, a dedicated backend endpoint for related items would be more efficient.
         if (productData && productData.Material) { 
           const allProductsApiUrl = `${process.env.REACT_APP_API_BASE_URL}/api/products`;
           const allProductsResponse = await fetch(allProductsApiUrl);
@@ -87,10 +74,10 @@ const ProductDetail = () => {
     if (id) {
       fetchProductDetails();
     }
-  }, [id]); // Re-run effect if the product ID in the URL changes
+  }, [id]);
 
   const incrementQuantity = () => {
-    // Use product.Stock from API data. Default to a sensible max if Stock is not available.
+
     if (product && quantity < (product.Stock || 10)) { 
       setQuantity(quantity + 1);
     }
@@ -107,18 +94,16 @@ const ProductDetail = () => {
   };
 
   const addToCartHandler = () => {
-    if (!product) return; // Ensure product data is loaded
+    if (!product) return; 
     
     const itemToAdd = {
       id: product.ProductID, // Use ProductID from your API response
       name: product.Name,
       price: product.Price,
       quantity: quantity,
-      // Use the imageMap to get the imported image variable based on ImagePath from API
       image: imageMap[product.ImagePath] || imageMap['default_placeholder.png'], 
       description: product.Description,
       rushOrder: rushOrder,
-      // Include other relevant fields from 'product' that CartProvider or CartItem might need
       ItemType: product.ItemType,
       Material: product.Material,
       Stock: product.Stock, 
@@ -143,7 +128,7 @@ const ProductDetail = () => {
     if(product) {
         addToCartHandler();
     }
-    navigate('/checkout'); // Then navigate to the cart page (or a dedicated checkout page)
+    navigate('/checkout'); 
   };
 
   // --- Render Logic ---
@@ -229,7 +214,6 @@ const ProductDetail = () => {
             <div>
               <p><strong>Type:</strong> {product.ItemType}</p>
               <p><strong>Material:</strong> {product.Material}</p>
-              {/* Add more relevant specifications from your product data */}
             </div>
           )}
           {activeTab === 'Reviews' && (

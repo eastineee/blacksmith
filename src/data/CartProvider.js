@@ -1,13 +1,6 @@
-// src/data/CartProvider.js
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useAuth } from './AuthProvider'; // Ensure this path is correct
-
-// Import the centralized productImages map from your utils folder
-// Path is relative from src/data/ to src/utils/
-import { productImages } from '../utils/productImages'; // <--- IMPORTED HERE
-
-// Local image imports and imageMap definition are removed from here.
-// All image mapping logic now relies on the imported 'productImages' object.
+import { useAuth } from './AuthProvider'; 
+import { productImages } from '../utils/productImages';
 
 const CartContext = createContext(null);
 
@@ -22,7 +15,7 @@ export const CartProvider = ({ children }) => {
   const getAuthHeaders = () => {
     const headers = { 'Content-Type': 'application/json' };
     if (isAuthenticated && user?.CustomerID) {
-      headers['temp-user-id'] = user.CustomerID; // Replace with actual auth token
+      headers['temp-user-id'] = user.CustomerID; 
     }
     return headers;
   };
@@ -52,7 +45,6 @@ export const CartProvider = ({ children }) => {
           name: dbItem.Name,
           price: parseFloat(dbItem.UnitPrice), 
           quantity: dbItem.Quantity,
-          // Use the imported productImages map here
           image: productImages[dbItem.ImagePath] || productImages['default_placeholder.png'], 
           description: dbItem.Description,
           rushOrder: !!dbItem.RushOrder,
@@ -138,7 +130,6 @@ export const CartProvider = ({ children }) => {
               : item
           );
         }
-        // For guest cart, newItem.image should already be the resolved imported variable from ProductDetail/Page
         return [...prevItems, { ...newItem, quantity: newItem.quantity || 1, totalPrice: calculatedTotalPrice }];
       });
     }
@@ -150,7 +141,7 @@ export const CartProvider = ({ children }) => {
         itemToUpdateLocally = cartItems.find(item => item.cartItemId === identifier);
     } else if (!isAuthenticated && typeof identifier === 'object') { 
         itemToUpdateLocally = cartItems.find(item => item.id === identifier.productId && item.rushOrder === identifier.rushOrder);
-    } else if (!isAuthenticated && typeof identifier === 'number') { // Fallback for guest if only id is passed
+    } else if (!isAuthenticated && typeof identifier === 'number') { 
         itemToUpdateLocally = cartItems.find(item => item.id === identifier);
     }
 

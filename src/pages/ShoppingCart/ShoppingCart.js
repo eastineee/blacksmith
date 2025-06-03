@@ -1,14 +1,8 @@
-// src/pages/ShoppingCart/ShoppingCart.js
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import './ShoppingCart.css'; // Make sure this CSS file exists and is styled
+import './ShoppingCart.css'; 
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../../data/CartProvider'; // Adjust path if CartProvider is not in src/data/
-
-// Import the centralized imageMap from your utils folder
-// Path is relative from src/pages/ShoppingCart/ to src/utils/
-import { productImages } from '../../utils/productImages'; // <--- IMPORTED HERE
-
-// No need for local image imports here if they are all managed in productImages.js and accessed via productImages map
+import { useCart } from '../../data/CartProvider';
+import { productImages } from '../../utils/productImages';
 
 export default function ShoppingCart() {
   const { 
@@ -54,19 +48,18 @@ export default function ShoppingCart() {
   useEffect(() => {
     if (allProducts.length > 0) {
       const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
-      // Ensure we don't try to slice more items than available, and also filter out items already in cart
       const currentCartProductIds = cartItems.map(item => item.id); // item.id here is ProductID
       const potentialRecs = shuffled.filter(p => !currentCartProductIds.includes(p.ProductID));
       const selected = potentialRecs.slice(0, 4); 
 
       const itemsWithCorrectImages = selected.map(prod => ({
         ...prod, // Spread all properties from the fetched product
-        id: prod.ProductID, // Ensure 'id' is ProductID for consistency if needed by onAddToCart
-        image: productImages[prod.ImagePath] || productImages['default_placeholder.png'] // Use centralized productImages map
+        id: prod.ProductID,
+        image: productImages[prod.ImagePath] || productImages['default_placeholder.png']
       }));
       setRecommendedItems(itemsWithCorrectImages);
     }
-  }, [allProducts, cartItems]); // Added cartItems as dependency to re-filter recs if cart changes
+  }, [allProducts, cartItems]); 
   
   const subtotal = useMemo(() => (
     cartItems.reduce((total, item) => total + ((Number(item.price) || 0) * (item.quantity || 0)), 0)
@@ -89,10 +82,8 @@ export default function ShoppingCart() {
               <p className="empty-cart-message">Your cart is currently empty. <Link to="/product">Continue Shopping</Link></p>
             ) : (
               cartItems.map(item => (
-                // CartItem now relies on item.image being the correct imported variable,
-                // which CartProvider should ensure (by also using the centralized productImages map if it fetches raw data).
                 <CartItem 
-                  key={`${item.id}-${item.rushOrder || false}`} // Ensure key is always unique
+                  key={`${item.id}-${item.rushOrder || false}`} 
                   item={item}
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemoveItem}
@@ -106,7 +97,7 @@ export default function ShoppingCart() {
               subtotal={subtotal} 
               shipping={shipping}
               tax={tax}
-              total={cartTotal} // cartTotal from CartProvider includes rush order fees
+              total={cartTotal} 
             />
           )}
         </div>
@@ -115,7 +106,7 @@ export default function ShoppingCart() {
         {errorRecs && <p style={{color: 'red'}}>Error loading recommendations: {errorRecs}</p>}
         {!isLoadingRecs && !errorRecs && recommendedItems.length > 0 && (
           <RecommendedItems 
-            items={recommendedItems} // These items now have their 'image' property resolved by productImages map
+            items={recommendedItems}
             onAddToCart={handleAddToCart} 
           />
         )}
@@ -128,7 +119,6 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
   <div className="cart-item">
     <div className="item-image">
       <div className="image-placeholder">
-        {/* item.image from CartProvider should already be the resolved imported variable */}
         <img src={item.image || '/placeholder.png'} alt={item.name} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
       </div>
     </div>
@@ -137,10 +127,6 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => (
       <p className="item-description">{item.description}</p>
       {item.rushOrder && <p className="rush-order-tag">Rush Order (+20%)</p>}
       <div className="quantity-control">
-        {/*
-          Pass item.cartItemId if it exists (for logged-in user's items from DB).
-          The CartProvider's handleQuantityChange/handleRemoveItem has logic to handle this.
-        */}
         <button className="quantity-btn decrease" onClick={() => onQuantityChange(item.cartItemId || {productId: item.id, rushOrder: item.rushOrder}, -1)} >−</button>
         <span className="quantity-display">{item.quantity}</span>
         <button className="quantity-btn increase" onClick={() => onQuantityChange(item.cartItemId || {productId: item.id, rushOrder: item.rushOrder}, 1)} >+</button>
@@ -182,8 +168,6 @@ const RecommendedItems = ({ items, onAddToCart }) => (
     <h2 className="recommended-title">You Might Also Like</h2>
     <div className="recommended-grid">
       {items.map(item => (
-        // 'item' here is a product object from the fetched 'allProducts',
-        // which has been processed to include the 'image' variable via productImages map.
         <div key={item.ProductID || item.id} className="recommended-item">
           <div className="recommended-image">
             <img src={item.image} alt={item.Name || item.name} style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
@@ -193,7 +177,7 @@ const RecommendedItems = ({ items, onAddToCart }) => (
             <p className="recommended-price">₱{(Number(item.Price || item.price || 0)).toFixed(2)}</p>
             <button 
               className="add-to-cart-btn"
-              onClick={() => onAddToCart({ // Ensure this object matches what CartProvider's handleAddToCart expects
+              onClick={() => onAddToCart({
                   id: item.ProductID || item.id, 
                   name: item.Name || item.name,
                   price: item.Price || item.price, // Unit price

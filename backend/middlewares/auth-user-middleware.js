@@ -1,4 +1,3 @@
-// --- Authentication Middleware (Placeholder - Updated for stricter checking) ---
 const authenticateUser = (req, res, next) => {
   const userIdFromHeader = req.headers['temp-user-id'];
 
